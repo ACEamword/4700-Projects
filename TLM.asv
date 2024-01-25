@@ -64,7 +64,7 @@ InputR(1) = ErN(t,InputParasR);
 %OutputR(1) = Ef(Nz);
 %OutputL(1) = Er(1);
 OutputR(i)=Ef(Nz)*(1-RR);
-OutputL(i)=Er(1)*(1-RL);
+OutputL(i)
 
 %Ef(1)= InputL(1);
 %Er(Nz) = InputR(1);
