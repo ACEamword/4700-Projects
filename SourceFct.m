@@ -8,7 +8,7 @@ end
 if ~isstruct(InputParas)
     E = InputParas;
 else
-    E = InputParas.E0*exp(-(t-InputParas.t0)^2/InputParas.wg^2)*exp(1i*(InputParas.we*t + InputParas.phi));
+    E = InputParas.E0*exp(-(t-InputParas.t0)^2/InputParas.wg^2)*exp(1i*(InputParas.we*t + InputParas.phi)); %TWM model for WG
 end
 
 end
