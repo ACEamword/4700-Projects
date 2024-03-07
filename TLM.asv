@@ -13,11 +13,13 @@ c_q=1.60217653e-19;
 c_hb=1.05457266913e-34; %Dirac constant
 c_h=c_hb*2*pi;
 
-InputParasL.E0 = 0;
+InputParasL.E0 = 1e7;
 InputParasL.we = 0;
 InputParasL.t0 = 2e-12;
 InputParasL.wg = 5e-13; %Guess weidth
 InputParasL.phi = 0;
+InputParasL.rep=100e-12;
+InputParasR.rep=100e-12;
 InputParasR = 0;
 
 Ntr = 1e18;
@@ -43,7 +45,7 @@ dz = L/(Nz-1);
 dt = dz/vg;
 fsync = dt*vg/dz;
 
-Nt = floor(20*Nz); %Control total time escape
+Nt = floor(200*Nz); %Control total time escape
 tmax = Nt*dt;
 t_L=dt*Nz;  %time to travel length
 
@@ -190,7 +192,7 @@ for i = 2:Nt
     Stim = gain.*(N - Ntr).*S;
     N = (N + dt*(I_injv/eVol - Stim))./(1+dt/taun);
     Nave(i) = mean(N);
-
+    
 
     if mod(i,plotN) == 0
         subplot(2,2,1)
@@ -241,7 +243,7 @@ for i = 2:Nt
         % hold off
 
         subplot(2,2,4);
-        plot(time(1:)*1e12,Nave(1:i));hold on
+        plot(time(1:i)*1e12,Nave(1:i));hold on
         %xlim([-1,1]*1e13)
         xlabel('time(ps)')
         ylabel('Nava')
