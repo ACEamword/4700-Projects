@@ -43,7 +43,7 @@ dz = L/(Nz-1);
 dt = dz/vg;
 fsync = dt*vg/dz;
 
-Nt = floor(1000*Nz); %Control total time escape
+Nt = floor(20*Nz); %Control total time escape
 tmax = Nt*dt;
 t_L=dt*Nz;  %time to travel length
 
@@ -241,7 +241,7 @@ for i = 2:Nt
         % hold off
 
         subplot(2,2,4);
-        plot(time(1:i)*1e12,Nave(1:i));hold on
+        plot(time(1:)*1e12,Nave(1:i));hold on
         %xlim([-1,1]*1e13)
         xlabel('time(ps)')
         ylabel('Nava')
