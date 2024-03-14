@@ -13,10 +13,11 @@ c_q=1.60217653e-19;
 c_hb=1.05457266913e-34; %Dirac constant
 c_h=c_hb*2*pi;
 
-InputParasL.E0 = 1e7;
+InputParasL.E0 = 0;
 InputParasL.we = 0;
 InputParasL.t0 = 2e-12;
 InputParasL.wg = 5e-13; %Guess weidth
+
 InputParasL.phi = 0;
 InputParasL.rep=100e-12;
 InputParasR = 0;
@@ -92,7 +93,7 @@ beta_r = 0;
 beta_i = 0;
 
 beta = ones(size(z))*(beta_r+1i*beta_i);
-exp_det = exp(-1i*dz*beta);
+%exp_det = exp(-1i*dz*beta);
 
 kappaStart = 1/3;
 kappaStop =2/3;
@@ -114,10 +115,10 @@ Zg = sqrt(c_mu_0/c_eps_0)/n_g;
 EtoP = 1/(Zg*f0*v_g*1e-2*c_hb);
 alpha = 0;
 
-beta_r = 0;
-gain_z = gain.*(N-Ntr)./v_g;
-beta_i = (gain_z - alpha)./2;
-beta = beta_r + 1i*beta_i;
+
+beta_spe = .3e-5;
+gamma = 1.0;
+SPE = 7;
 
 figure('name','Fields')
 subplot(2,2,1)
@@ -151,6 +152,12 @@ for i = 2:Nt
     kappa(z<L*kappaStart) = 0;
     kappa(z>L*kappaStop) = 0;
 
+    beta_r = 0;
+    gain_z = gain.*(N-Ntr)./v_g;
+    beta_i = (gain_z - alpha)./2;
+    beta = beta_r + 1i*beta_i;
+    exp_det = exp(-1i*dz*beta);
+
     %Ef(1) = InputL(i);
     %Er(Nz) = InputR(i); Code without mirror
     Ef(1) = InputL(i)+RL*Er(1);
@@ -172,6 +179,27 @@ for i = 2:Nt
     Pr(Nz) = 0;
     Cw0 = -LGamma + 1i*Lw0;
 
+
+    
+
+    %%%milestone 7 
+    A = sqrt(gamma*beta_spe*c_hb*f0*L*1e-2/taun)/(2*Nz);
+    if SPE > 0
+        Tf = (randn(1,Nz)+1i*randn(1,Nz))*A;
+        Tr = (randn(1,Nz)+1i*randn(1,Nz))*A;
+    else
+        Tf = (ones(1,Nz))*A;
+        Tr = (ones(1,Nz))*A;
+    end
+
+    EsF = Tf*abs(SPE).*sqrt(N.*1e6);
+    EsR = Tr*abs(SPE).*sqrt(N.*1e6);
+
+    Ef = Ef + EsF;
+    Er = Er + EsR;
+    %%%end
+    
+     %%%milestone 6
     Tf = LGamma*Ef(1:Nz-2) + Cw0*Pfp(2:Nz-1) + LGamma*Efp(1:Nz-2);
     Pf(2:Nz-1) = (Pfp(2:Nz-1) + 0.5*dt*Tf)./(1-0.5*dt*Cw0);
     Tr = LGamma*Er(3:Nz) + Cw0*Prp(2:Nz-1) + LGamma*Erp(3:Nz);
@@ -191,7 +219,7 @@ for i = 2:Nt
     Stim = gain.*(N - Ntr).*S;
     N = (N + dt*(I_injv/eVol - Stim))./(1+dt/taun);
     Nave(i) = mean(N);
-    
+    %%%end
 
     if mod(i,plotN) == 0
         subplot(2,2,1)
